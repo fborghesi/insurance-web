@@ -17,10 +17,17 @@ a {
 
 @media (prefers-color-scheme: dark) {
   html {
-    color-scheme: dark;
+    color-scheme: inherit;
   }
   body {
-    color: white;
-    background: black;
+    color: black;
+    background: white;
   }
+}
+
+.drop-area {
+    border-width: 2;
+    border-color: rgb(102, 102, 102);
+    border-style: dashed;
+    border-radius: 5;
 }
