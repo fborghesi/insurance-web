@@ -1,23 +1,25 @@
-import { Box } from "@mui/material";
+/* eslint-disable @next/next/no-img-element */
+import { Box, CircularProgress } from "@mui/material";
 import ImageUpload from "../components/ImageUpload";
 import ImageClassificationCard from "./ImageClassificationCard";
 import { ImageInfo } from "./ImageInfo";
 
 type OnFilesChangedHandler = (files: File[]) => void;
 
-type CarModelViewerProps = {
+type ObjectModelViewerProps = {
     onFilesChangedHandler: OnFilesChangedHandler;
-    image: ImageInfo | undefined;
+    imageInfo: ImageInfo | undefined;
+    processedImage: string | undefined;
 };
 
-const ObjectModelViewer = (props: CarModelViewerProps) => {
-    const { image } = props;
+const ObjectModelViewer = (props: ObjectModelViewerProps) => {
+    const { imageInfo } = props;
     const filesChangedHandler = (files: File[]) => {
         if (props.onFilesChangedHandler) {
             props.onFilesChangedHandler(files);
         }
     };
-
+   
     return (
         <Box
             display="flex"
@@ -31,16 +33,14 @@ const ObjectModelViewer = (props: CarModelViewerProps) => {
             ></ImageUpload>
             <Box style={{ flexBasis: "100%", height: "30px" }}></Box>
 
-            {image && (
+            {imageInfo && (
                 <ImageClassificationCard
-                    key={image!.file.name}
-                    file={image!.file}
-                    category={image!.category}
-                    timeMs={
-                        image!.endTime
-                            ? image!.endTime - image!.startTime
-                            : undefined
-                    }
+                    key={imageInfo!.file.name}
+                    file={imageInfo!.file}
+                    imageData={props.processedImage}
+                    imageHeight={props.processedImage ? "600px" : undefined}
+                    timeMs={props.imageInfo?.endTime ? props.imageInfo.endTime - props.imageInfo.startTime : undefined}
+                    processing={props.imageInfo?.endTime === undefined}
                 />
             )}
         </Box>

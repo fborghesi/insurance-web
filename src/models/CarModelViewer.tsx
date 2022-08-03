@@ -51,6 +51,7 @@ const CarModelViewer = (props: ObjectModelViewerProps) => {
                             key={img.file.name}
                             file={img.file}
                             category={img.category}
+                            processing={!img.endTime}
                             timeMs={img.endTime ? img.endTime - img.startTime : undefined}
                         />
                     );

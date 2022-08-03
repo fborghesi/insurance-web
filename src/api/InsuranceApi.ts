@@ -120,4 +120,22 @@ export const InsuranceApi = {
             return Promise.reject(response.data.message);
         }
     },
+
+    objectModel: async (file: File): Promise<string> => {
+        const response = await axiosInstance.post("/object-model", file, {
+            headers: {
+                "Content-Type": file.type,
+            },
+        });
+        
+
+        if (response.status === 200) {
+            return Promise.resolve('data:image/png;base64, ' + response.data);
+        }
+        else {
+            console.log("ERROR on objectModel response", response);
+            return Promise.reject(response.data.message);
+        }
+    },
 };
+

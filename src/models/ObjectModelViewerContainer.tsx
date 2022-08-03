@@ -5,24 +5,26 @@ import ObjectModelViewer from "./ObjectModelViewer";
 
 
 const ObjectModelViewerContainer = () => {
-    const [image, setImage] = useState<ImageInfo | undefined>(undefined);
+    const [imageInfo, setImage] = useState<ImageInfo | undefined>(undefined);
+    const [processedImage, setProcessedImage] = useState<string | undefined>(undefined);
 
     const updateApiResponses = useCallback((category: string) => {
-        if (!image) {
+        if (!imageInfo) {
             console.error(`Image not set!'`);
             return;
         }
 
-        console.log(`Classification received for ${image.file.name}: ${category}`);
+        console.log(`Classification received for ${imageInfo.file.name}: ${category}`);
 
-        image.status = "complete";
-        image.category = category;
-        image.endTime = new Date().getTime();
+        imageInfo.status = "complete";
+        imageInfo.category = category;
+        imageInfo.endTime = new Date().getTime();
 
-        setImage(image);
-    }, [image]);
+        setImage(imageInfo);
+    }, [imageInfo]);
 
     const onFilesChangedHandler = (files: File[]) => {
+        setProcessedImage(undefined);
         setImage({
             file: files[0],
             startTime: new Date().getTime(),
@@ -34,19 +36,22 @@ const ObjectModelViewerContainer = () => {
     };
 
     useEffect(() => {
-        if (image && !image.endTime) {
-            InsuranceApi.carModel(image.file).then((category) =>
-                updateApiResponses(category)
-            );
+        if (imageInfo && !imageInfo.endTime) {
+            InsuranceApi.objectModel(imageInfo.file).then(img => {
+                imageInfo.endTime = new Date().getTime();
+                imageInfo.category = undefined;
+                setProcessedImage(img);
+            });
         }
-    }, [image, setImage, updateApiResponses]);
+    }, [imageInfo]);
 
     return (
         <>
             <h1>Object Model</h1>
             <ObjectModelViewer
                 onFilesChangedHandler={onFilesChangedHandler}
-                image={image}
+                imageInfo={imageInfo}
+                processedImage={processedImage}
             />
         </>
     );
