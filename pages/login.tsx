@@ -4,7 +4,9 @@ import AuthBoundary from "../src/auth/AuthBoundary";
 import LoginFormContainer from "../src/login/LoginFormContainer";
 import ErrorBoundary from "../src/utils/ErrorBoundary";
 
+
 const Login = () => {
+    
     return (
         <ErrorBoundary>
             <AuthBoundary>

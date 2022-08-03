@@ -92,7 +92,7 @@ export const InsuranceApi = {
             const response = await axiosInstance.post("/user/login", {
                 email: credentials.email,
                 password: credentials.password,
-                provider: "local",
+                // provider: "local",
             });
             if (response.data.message === "Success") {
                 return Promise.resolve(response.data.data);
