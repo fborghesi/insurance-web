@@ -13,7 +13,6 @@ const GOOGLE_SCOPE = [
     "https://www.googleapis.com/auth/userinfo.profile",
 ].join(" ");
 
-
 const LoginFormContainer = () => {
     const router = useRouter();
     const errorMessage = router.isReady ? router.query?.errorMessage : "";
@@ -29,10 +28,7 @@ const LoginFormContainer = () => {
         const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
         const redirectUri = "user/login";
 
-        console.log("process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID", process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
-        console.log("process.env.NEXT_PUBLIC_BACKEND_URL", process.env.NEXT_PUBLIC_BACKEND_URL);
-
-        const params: URLSearchParams = {
+        const params = {
             response_type: "code",
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
             redirect_uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/${redirectUri}`,
@@ -41,11 +37,16 @@ const LoginFormContainer = () => {
             scope: GOOGLE_SCOPE,
         };
 
-        const urlParams = new URLSearchParams(params).toString();
-        //const authWindow = window.open(`${googleAuthUrl}?${urlParams}`, 'Authentication', 'toolbar=1,location=1,directories=1,status=1,menubar=1,scrollbars=1,resizable=1');
-        //authWindow.close();
-        router.replace(`${googleAuthUrl}?${urlParams}`);
-
+        const urlParams = new URLSearchParams();
+        Object.entries(params).forEach((entry) => {
+            const [k, v] = entry;
+            if (!v) {
+                console.warn();
+                `No value set for paramter ${k}`;
+            }
+            urlParams.append(k, v ?? "");
+        });
+        router.replace(`${googleAuthUrl}?${urlParams.toString()}`);
     };
 
     useEffect(() => {
@@ -84,9 +85,7 @@ const LoginFormContainer = () => {
                 justifyContent={"center"}
                 marginTop={"40px"}
             >
-                <GoogleButton
-                    onClick={openGoogleLoginPage}
-                />
+                <GoogleButton onClick={openGoogleLoginPage} />
             </Box>
         </>
     );
