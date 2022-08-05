@@ -2,7 +2,8 @@ import { getCookie, deleteCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { Context, useCallback, useEffect } from "react";
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
-import { InsuranceApi, UserType } from "../api/InsuranceApi";
+import { InsuranceApi } from "../api/InsuranceApi";
+import { UserType } from "../api/UserType";
 
 //import jwt_decode from "jwt-decode";
 

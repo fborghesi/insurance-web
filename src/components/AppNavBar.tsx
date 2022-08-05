@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { UserInfo } from "os";
 import React from "react";
-import { UserType } from "../api/InsuranceApi";
+import { UserType } from "../api/UserType";
 import { useAuthContext } from "../auth/AuthContext";
 
 const formatUserName = (user: UserType) => {
@@ -24,7 +24,7 @@ type AppNavBarProps = {
 };
 
 const AppNavBar = (props: AppNavBarProps) => {
-    const authContext = useAuthContext();
+    const {user} = useAuthContext();
     const router = useRouter();
 
     const logoutClickHandler = () => {
@@ -38,21 +38,30 @@ const AppNavBar = (props: AppNavBarProps) => {
                     <Typography
                         variant="h6"
                         component="div"
-                        sx={{ flexGrow: 0, margin: "5px" }}
+                        sx={{ flexGrow: 0, margin: "14" }}
                     >
-                        <Link href={"/car-model"}>Car Model</Link>
+                        <Link href={"/car-model"}>Cars</Link>
                     </Typography>
                     <Typography
                         variant="h6"
                         component="div"
-                        sx={{ flexGrow: 0, margin: "5px" }}
+                        sx={{ flexGrow: 0, margin: "15px" }}
                     >
-                        <Link href={"/object-model"}>Object Model</Link>
+                        <Link href={"/object-model"}>Objects</Link>
                     </Typography>
+                    {user && user.is_admin && (
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{ flexGrow: 0, margin: "15px" }}
+                        >
+                            <Link href={"/admin/users"}>Users</Link>
+                        </Typography>
+                    )}
                     <Typography component="div" sx={{ flexGrow: 1, margin: "5px" }} />
-                    {authContext.user && (
+                    {user && (
                         <Button color="inherit" onClick={logoutClickHandler}>
-                            Logout {formatUserName(authContext.user)}
+                            Logout {formatUserName(user)}
                         </Button>
                     )}
                 </Toolbar>

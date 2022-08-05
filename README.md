@@ -1,35 +1,57 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ML Demo
+This is the web frontend for the Machine Learning Demo Project.
 
-## Getting Started
+## Before you Begin
+For log ins to work you'll need to 
 
-First, run the development server:
 
+## Local Development 
+
+To run this project in development mode, you need to set up the environment 
+first. In order to do so you must copy the file .env.example in the root folder
+in this project to .env:
 
 ```bash
-npm run dev
-# or
-yarn dev
+cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then you'll need to edit the file using vi or any other text editor of your
+preference and set the following variables:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+* **NEXT_PUBLIC_BACKEND_URL**: contains the url where your lambda functions
+    are running, it could be your local host if you're running lambda locally
+    via docker (sam local start-api) or the actual lambda address on AWS 
+    (https://pgqxqlayj1.execute-api.us-east-1.amazonaws.com/dev).
+* **NEXT_PUBLIC_GOOGLE_CLIENT_ID**: sets Google's client id as obtained from 
+  Google's API and Services section. The value will be string like the 
+  following 123456789012-abcdefghijklmnopqrstuvwxyz012345.apps.googleusercontent.com.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+ You're all set. Now it's time to run the project with the command below:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+ ```bash
+npm run dev
+```
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## Deploying to Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+ Just as you did in the previous section for local development, you'll need to 
+ define your environment. In this case you won't enter the values into a file
+ but into the UI. Vercel will take care of exporting these value into the 
+ environment at deployment time.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+ For this to work you'll need to:
+ * Log in to vercel (https://vercel.com/)
+ * Select the project (insurance-web)
+ * Click on **Settings** on the top menu
+ * Click on **Environment Variables** on the left menu
+  
+There you must define the values for **NEXT_PUBLIC_BACKEND_URL** and 
+**NEXT_PUBLIC_GOOGLE_CLIENT_ID**. Keep in mind that variables can be set for
+the different environments individually or can be share by all of them.
+ 
+ Every time you push to the main branch on github.com:fborghesi/insurance-web.git, 
+ the project will get deployed to vercel. You can also re-deploy by going to 
+ the **Deployments** section on the top menu and click on the **Redeploy**
+ menu option for any of the existing deployments.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

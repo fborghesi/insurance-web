@@ -1,21 +1,11 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
-
+import { UserType } from "./UserType";
 
 type ExpiredTokenCallback = () => void;
 
 export type CredentialsType = {
     email: string;
     password: string;
-};
-
-export type UserType = {
-    id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    is_admin: boolean;
-    is_active: boolean;
-    token: string;
 };
 
 export type ServerLoginResponseType = {
@@ -114,8 +104,7 @@ export const InsuranceApi = {
         });
         if (response.data.message === "Success") {
             return Promise.resolve(response.data.data);
-        }
-        else {
+        } else {
             console.log("ERROR on CarModel response", response);
             return Promise.reject(response.data.message);
         }
@@ -127,15 +116,73 @@ export const InsuranceApi = {
                 "Content-Type": file.type,
             },
         });
-        
 
         if (response.status === 200) {
-            return Promise.resolve('data:image/png;base64, ' + response.data);
-        }
-        else {
+            return Promise.resolve("data:image/png;base64, " + response.data);
+        } else {
             console.log("ERROR on objectModel response", response);
             return Promise.reject(response.data.message);
         }
     },
-};
 
+    getUsers: async (): Promise<UserType[]> => {
+        try {
+            const response = await axiosInstance.get("/user");
+            if (response.data.message === "Success") {
+                return Promise.resolve(response.data.data);
+            } else {
+                return Promise.reject(JSON.parse(response.data.error));
+            }
+        } catch (e) {
+            return Promise.reject(extract_error_msg(e));
+        }
+    },
+
+    deleteUser: async (id: string): Promise<undefined> => {
+        try {
+            const response = await axiosInstance.delete(`/user/${id}`);
+            if (response.data.message === "Success") {
+                return Promise.resolve(undefined);
+            } else {
+                return Promise.reject(response.data.error);
+            }
+        } catch (e) {
+            return Promise.reject(extract_error_msg(e));
+        }
+    },
+
+
+    getUser: async (id: string): Promise<UserType> => {
+        try {
+            const response = await axiosInstance.get(`/user/${id}`);
+            if (response.data.message === "Success") {
+                return Promise.resolve(response.data.data);
+            } else {
+                return Promise.reject(JSON.parse(response.data.error));
+            }
+        } catch (e) {
+            return Promise.reject(extract_error_msg(e));
+        }
+    },
+
+    updateUser: async (user: UserType): Promise<undefined> => {
+        try {
+            const response = await axiosInstance.put(`/user/${user.id}`, {
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+                is_admin: user.is_admin,
+                is_active: user.is_active,
+            });
+            if (response.status === 204) {
+                return Promise.resolve(undefined);
+            } else {
+                return Promise.reject(JSON.parse(response.data.error));
+            }
+        } catch (e) {
+            return Promise.reject(extract_error_msg(e));
+        }
+    },
+
+
+};

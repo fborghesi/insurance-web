@@ -1,7 +1,8 @@
 import { Alert, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
-import { CredentialsType, InsuranceApi, UserType } from "../api/InsuranceApi";
+import { CredentialsType, InsuranceApi } from "../api/InsuranceApi";
+import { UserType } from "../api/UserType";
 import { useAuthContext } from "../auth/AuthContext";
 import { useAsync } from "../utils/useAsync";
 import GoogleButton from "react-google-button";
