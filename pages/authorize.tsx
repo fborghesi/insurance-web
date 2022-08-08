@@ -1,9 +1,11 @@
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Button } from "@mui/material";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { InsuranceApi } from "../src/api/InsuranceApi";
 import { UserType } from "../src/api/UserType";
 import { useAuthContext } from "../src/auth/AuthContext";
+import LoginIcon from '@mui/icons-material/Login';
+import { Box } from "@mui/system";
 
 
 const Authorize = () => {
@@ -33,16 +35,19 @@ const Authorize = () => {
     }
     console.log(router.query);
 
-    if (!router.query.noaccess) {
+    if (!router.query.noaccess) {x``
         return <><CircularProgress />You will be redirected soon</>;
     }
 
     return (
-            <>
+            <Box width="600px">
             <h1>Thank you for registering.</h1>
             <p>An account for you has been created on the system, but it is peding approval by the administrator.</p>
             <p>Please try again later or contact the Aministrator to check for status.</p>
-            </>
+            <Box style={{display: 'block', width: '250px', marginTop: '50px', margin: '0 auto',}}>
+            <Button style={{width: '100%'}} variant="contained" startIcon={<LoginIcon />} onClick={() => router.replace("/login")}>Back to login</Button>
+            </Box>
+            </Box>
         );
 
 };
