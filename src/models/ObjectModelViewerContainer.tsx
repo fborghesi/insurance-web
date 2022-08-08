@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { InsuranceApi } from "../api/InsuranceApi";
 import { ImageInfo } from "./ImageInfo";
@@ -46,14 +47,14 @@ const ObjectModelViewerContainer = () => {
     }, [imageInfo]);
 
     return (
-        <>
+        <Box width={"60%"} margin={"0 auto"}>
             <h1>Object Model</h1>
             <ObjectModelViewer
                 onFilesChangedHandler={onFilesChangedHandler}
                 imageInfo={imageInfo}
                 processedImage={processedImage}
             />
-        </>
+        </Box>
     );
 };
 

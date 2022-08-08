@@ -1,7 +1,6 @@
-import createTypography from "@mui/material/styles/createTypography";
+import { Box } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { InsuranceApi } from "../api/InsuranceApi";
-import { loadImage } from "../utils/loadImage";
 import { ImageInfo } from "./ImageInfo";
 import CarModelViewer from "./CarModelViewer";
 
@@ -55,13 +54,13 @@ const CarModelViewerContainer = () => {
     }, [imageMap, setImageMap, updateApiResponses]);
 
     return (
-        <>
+        <Box width="60%" margin={"0 auto"}>
             <h1>Car Model</h1>
             <CarModelViewer
                 onFilesChangedHandler={onFilesChangedHandler}
                 images={imageMap}
             />
-        </>
+        </Box>
     );
 };
 
