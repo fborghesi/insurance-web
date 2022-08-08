@@ -48,9 +48,9 @@ const QuickDialog = (props: QuickDialogProps) => {
                     {props.title}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-contents">
+                    {/* <DialogContentText id="alert-dialog-contents"> */}
                     {props.children}
-                    </DialogContentText>
+                    {/* </DialogContentText> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={okClikckHandler}>{props.okButtonText ?? DEFAULT_OK_BUTTON_TEXT}</Button>
