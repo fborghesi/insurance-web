@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import { UserType } from "./UserType";
+import { UserType, LoggedUserType } from "./UserType";
 
 type ExpiredTokenCallback = () => void;
 
@@ -77,7 +77,7 @@ export const InsuranceApi = {
         );
     },
 
-    login: async (credentials: CredentialsType): Promise<UserType> => {
+    login: async (credentials: CredentialsType): Promise<LoggedUserType> => {
         try {
             const response = await axiosInstance.post("/user/login", {
                 email: credentials.email,

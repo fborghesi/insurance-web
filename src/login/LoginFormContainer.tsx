@@ -1,8 +1,8 @@
 import { Alert, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { CredentialsType, InsuranceApi } from "../api/InsuranceApi";
-import { UserType } from "../api/UserType";
+import { LoggedUserType } from "../api/UserType";
 import { useAuthContext } from "../auth/AuthContext";
 import { useAsync } from "../utils/useAsync";
 import GoogleButton from "react-google-button";
@@ -22,7 +22,7 @@ const LoginFormContainer = () => {
         status,
         value: user,
         error,
-    } = useAsync<UserType, CredentialsType>(InsuranceApi.login);
+    } = useAsync<LoggedUserType, CredentialsType>(InsuranceApi.login);
     const authContext = useAuthContext();
 
     const openGoogleLoginPage = () => {
@@ -52,7 +52,7 @@ const LoginFormContainer = () => {
 
     useEffect(() => {
         if (status == "success" && user) {
-            authContext!.setUser(user as UserType);
+            authContext!.setUser(user as LoggedUserType);
             router.push("/");
         }
     }, [authContext, status, user, router]);
