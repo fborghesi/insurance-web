@@ -20,8 +20,8 @@ const UserTableContainer = () => {
         value: toggleAdminUser,
         error: toggleAdminError,
     } = useAsync<UserType, string>(async (userId: string) => {
-        const user = await InsuranceApi.getUser(userId);
-        user.is_admin = !user.is_admin;        
+        const user = users?.find(u => u.id == userId) as UserType;
+        user.is_admin = !user.is_admin;
         await InsuranceApi.updateUser(user);
         return user;
     });
@@ -32,7 +32,11 @@ const UserTableContainer = () => {
         value: toggleActiveUser,
         error: toggleActiveError,
     } = useAsync<UserType, string>(async (userId: string) => {
-        const user = await InsuranceApi.getUser(userId);
+        const user = users?.find(u => u.id == userId) as UserType;
+        if (!user) {
+            console.error(`User with id ${userId} not found!`);
+            return user;
+        }
         user.is_active = !user.is_active;
         await InsuranceApi.updateUser(user);
         return user;
