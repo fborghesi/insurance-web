@@ -141,7 +141,7 @@ export const InsuranceApi = {
     deleteUser: async (id: string): Promise<undefined> => {
         try {
             const response = await axiosInstance.delete(`/user/${id}`);
-            if (response.data.message === "Success") {
+            if (response.status === 204) {
                 return Promise.resolve(undefined);
             } else {
                 return Promise.reject(response.data.error);

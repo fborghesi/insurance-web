@@ -85,7 +85,11 @@ const UserTable = (props: UserTableProps) => {
                     <IconButton
                         aria-label="toggle-active"
                         disabled={params.row.id == user?.id}
-                        color={params.row.is_active && params.row.id != user?.id ? "info" : "default"}
+                        color={
+                            params.row.is_active && params.row.id != user?.id
+                                ? "info"
+                                : "default"
+                        }
                         onClick={() => {
                             setQuickDialogOpen(false);
                             props.onToggleActive(params.row.id);
@@ -113,14 +117,18 @@ const UserTable = (props: UserTableProps) => {
                     <IconButton
                         aria-label="toggle-administrator"
                         disabled={params.row.id == user?.id}
-                        color={params.row.is_admin && params.row.id != user?.id ? "info" : "default"}
+                        color={
+                            params.row.is_admin && params.row.id != user?.id
+                                ? "info"
+                                : "default"
+                        }
                         onClick={() => {
                             setQuickDialogOpen(false);
                             props.onToggleAdmin(params.row.id);
                         }}
                     >
                         <Tooltip title="Toggle administrator">
-                        {params.row.is_admin ? (
+                            {params.row.is_admin ? (
                                 <ToggleOnIcon />
                             ) : (
                                 <ToggleOffIcon />

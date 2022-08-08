@@ -33,9 +33,6 @@ const UserTableContainer = () => {
         return newUser;
     });
 
-
-
-
     const deleteUserHandler = async (userId: string) => {
         await InsuranceApi.deleteUser(userId as string);
         getUsers(undefined);

@@ -37,7 +37,7 @@ const QuickDialog = (props: QuickDialogProps) => {
     };
 
     return (
-        <div>
+        <>
             <Dialog
                 open={props.open}
                 // onClose={handleClose}
@@ -49,7 +49,7 @@ const QuickDialog = (props: QuickDialogProps) => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-contents">
-                        {props.children}
+                    {props.children}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -59,7 +59,7 @@ const QuickDialog = (props: QuickDialogProps) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </>
     );
 }
 
