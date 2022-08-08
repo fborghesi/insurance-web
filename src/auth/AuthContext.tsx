@@ -3,22 +3,22 @@ import { useRouter } from "next/router";
 import { Context, useCallback, useEffect } from "react";
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 import { InsuranceApi } from "../api/InsuranceApi";
-import { UserType } from "../api/UserType";
+import { LoggedUserType } from "../api/UserType";
 
 //import jwt_decode from "jwt-decode";
 
 const USER_KEY = "user";
 
 export type AuthContextType = {
-    user: UserType | null;
-    setUser: (User: UserType) => void;
+    user: LoggedUserType | null;
+    setUser: (User: LoggedUserType) => void;
     unsetUser: () => void;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthContextProvider = (props: { children: ReactNode }) => {
-    const [user, setUser] = useState<UserType | null>(null);
+    const [user, setUser] = useState<LoggedUserType | null>(null);
     const [isUserReady, setUserReady] = useState<boolean>(false);
     const router = useRouter();
 
@@ -31,7 +31,7 @@ export const AuthContextProvider = (props: { children: ReactNode }) => {
     }, [router]);
 
     const setAuthUser = useCallback(
-        (newUser: UserType | null) => {
+        (newUser: LoggedUserType | null) => {
             if (user?.token != newUser?.token) {
                 setCookie(USER_KEY, JSON.stringify(newUser));
                 setUser(newUser);

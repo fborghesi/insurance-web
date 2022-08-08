@@ -6,6 +6,13 @@ import { useAsync } from "../utils/useAsync";
 import Backdrop from "@mui/material/Backdrop";
 import UserTable from "./UserTable";
 
+type ToggleFunction = (user: UserType) => UserType;
+
+type ToggleParams = {
+    userId: string;
+    toggleFn: ToggleFunction;
+};
+
 const UserTableContainer = () => {
     const {
         execute: getUsers,
@@ -15,32 +22,18 @@ const UserTableContainer = () => {
     } = useAsync<UserType[], undefined>(InsuranceApi.getUsers);
 
     const {
-        execute: toggleAdmin,
-        status: toggleAdminStatus,
-        value: toggleAdminUser,
+        execute: toggleHandler,
+        status: toggleStatus,
+        value: toggleUser,
         error: toggleAdminError,
-    } = useAsync<UserType, string>(async (userId: string) => {
-        const user = users?.find(u => u.id == userId) as UserType;
-        user.is_admin = !user.is_admin;
-        await InsuranceApi.updateUser(user);
-        return user;
+    } = useAsync<UserType, ToggleParams>(async (params: ToggleParams) => {
+        const user = users?.find(u => u.id == params.userId) as UserType;
+        const newUser = params.toggleFn(user);
+        await InsuranceApi.updateUser(newUser);
+        return newUser;
     });
 
-    const {
-        execute: toggleActive,
-        status: toggleActiveStatus,
-        value: toggleActiveUser,
-        error: toggleActiveError,
-    } = useAsync<UserType, string>(async (userId: string) => {
-        const user = users?.find(u => u.id == userId) as UserType;
-        if (!user) {
-            console.error(`User with id ${userId} not found!`);
-            return user;
-        }
-        user.is_active = !user.is_active;
-        await InsuranceApi.updateUser(user);
-        return user;
-    });
+
 
 
     const deleteUserHandler = async (userId: string) => {
@@ -49,11 +42,11 @@ const UserTableContainer = () => {
     };
 
     const toggleAdminHandler = async (userId: string) => {
-        toggleAdmin(userId);
+        toggleHandler({userId, toggleFn: u => ({...u, is_admin: !u.is_admin})});
     };
 
     const toggleActiveHandler = async (userId: string) => {
-        toggleActive(userId);
+        toggleHandler({userId, toggleFn: u => ({...u, is_active: !u.is_active})});
     };
 
     useEffect(() => {
@@ -73,16 +66,13 @@ const UserTableContainer = () => {
     }, [users]);
 
     useEffect(() => {
-        if (toggleAdminStatus === "success") {
-            updateUser(toggleAdminUser!);
+        if (toggleStatus === "success") {
+            updateUser(toggleUser!);
         }
-        if (toggleActiveStatus === "success") {
-            updateUser(toggleActiveUser!);
-        }
-    }, [getUsers, toggleAdminStatus, toggleActiveStatus, users, toggleAdminUser, toggleActiveUser, updateUser]);
+    }, [getUsers, toggleStatus, users, updateUser, toggleUser]);
 
 
-    const inProgress = getUsersStatus === "pending" || toggleAdminStatus === "pending" || toggleActiveStatus === "pending";
+    const inProgress = getUsersStatus === "pending" || toggleStatus === "pending";
 
     return (
         <>

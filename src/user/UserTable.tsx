@@ -12,9 +12,11 @@ import { Box } from "@mui/system";
 import { useAuthContext } from "../auth/AuthContext";
 import QuickDialog from "../components/QuickDialog";
 import Tooltip from "@mui/material/Tooltip";
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
+import ToggleOffIcon from "@mui/icons-material/ToggleOff";
+import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 
 type onUserEvent = (id: string) => void;
 
@@ -37,12 +39,29 @@ const UserTable = (props: UserTableProps) => {
         setQuickDialogOpen(true);
     };
 
-
     const columns: GridColDef[] = [
         //{ field: "id", headerName: "Id", width: 130 },
-        { field: "first_name", headerName: "First name", headerAlign: "center", align: "center", width: 150 },
-        { field: "last_name", headerName: "Last name", headerAlign: "center", align: "center", width: 150 },
-        { field: "email", headerName: "E-mail Address", headerAlign: "center", align: "center", width: 300 },
+        {
+            field: "first_name",
+            headerName: "First name",
+            headerAlign: "center",
+            align: "center",
+            width: 150,
+        },
+        {
+            field: "last_name",
+            headerName: "Last name",
+            headerAlign: "center",
+            align: "center",
+            width: 150,
+        },
+        {
+            field: "email",
+            headerName: "E-mail Address",
+            headerAlign: "center",
+            align: "center",
+            width: 300,
+        },
         {
             field: "changed",
             headerName: "Last Change",
@@ -50,8 +69,10 @@ const UserTable = (props: UserTableProps) => {
             align: "center",
             width: 200,
             valueFormatter: (params: GridValueFormatterParams<number>) => {
-                return params.value > 0 ? new Date(params.value * 1000).toLocaleString() : "N/A";
-            }
+                return params.value > 0
+                    ? new Date(params.value * 1000).toLocaleString()
+                    : "N/A";
+            },
         },
         {
             field: "is_active",
@@ -59,6 +80,27 @@ const UserTable = (props: UserTableProps) => {
             headerAlign: "center",
             type: "boolean",
             width: 80,
+            renderCell: (params: GridRenderCellParams) => {
+                return (
+                    <IconButton
+                        aria-label="toggle-active"
+                        disabled={params.row.id == user?.id}
+                        color={params.row.is_active && params.row.id != user?.id ? "info" : "default"}
+                        onClick={() => {
+                            setQuickDialogOpen(false);
+                            props.onToggleActive(params.row.id);
+                        }}
+                    >
+                        <Tooltip title="Toggle account active">
+                            {params.row.is_active ? (
+                                <ToggleOnIcon />
+                            ) : (
+                                <ToggleOffIcon />
+                            )}
+                        </Tooltip>
+                    </IconButton>
+                );
+            },
         },
         {
             field: "is_admin",
@@ -66,44 +108,49 @@ const UserTable = (props: UserTableProps) => {
             headerAlign: "center",
             type: "boolean",
             width: 80,
+            renderCell: (params: GridRenderCellParams) => {
+                return (
+                    <IconButton
+                        aria-label="toggle-administrator"
+                        disabled={params.row.id == user?.id}
+                        color={params.row.is_admin && params.row.id != user?.id ? "info" : "default"}
+                        onClick={() => {
+                            setQuickDialogOpen(false);
+                            props.onToggleAdmin(params.row.id);
+                        }}
+                    >
+                        <Tooltip title="Toggle administrator">
+                        {params.row.is_admin ? (
+                                <ToggleOnIcon />
+                            ) : (
+                                <ToggleOffIcon />
+                            )}
+                        </Tooltip>
+                    </IconButton>
+                );
+            },
         },
 
         {
             field: "actions",
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
             headerName: "Actions",
             headerAlign: "center",
             width: 160,
             renderCell: (params: GridRenderCellParams<any, any, any>) => {
-                const rowUserId = params.id as string;
-                if (rowUserId == user?.id) {
-                    return <></>;
-                }
-
                 return (
                     <Box margin="auto">
                         <IconButton
-                            aria-label="toggle-admin"
-                            onClick={() => {
-                                setQuickDialogOpen(false);
-                                props.onToggleActive(rowUserId);
-                            }}
-                        >
-                            <Tooltip title="Toggle account active"><RotateLeftIcon /></Tooltip>
-                        </IconButton>
-                        <IconButton
-                            aria-label="toggle-admin"
-                            onClick={() => {
-                                setQuickDialogOpen(false);
-                                props.onToggleAdmin(rowUserId);
-                            }}
-                        >
-                            <Tooltip title="Toggle administrator"><AdminPanelSettingsIcon /></Tooltip>
-                        </IconButton>
-                        <IconButton
                             aria-label="delete"
-                            onClick={() => deleteClickHandler(rowUserId)}
+                            color="error"
+                            disabled={params.row.id == user?.id}
+                            onClick={() => deleteClickHandler(params.row.id)}
                         >
-                            <Tooltip title="Delete this user"><DeleteIcon /></Tooltip>
+                            <Tooltip title="Delete this user">
+                                <DeleteIcon />
+                            </Tooltip>
                         </IconButton>
                     </Box>
                 );
@@ -129,9 +176,20 @@ const UserTable = (props: UserTableProps) => {
                     props.onDelete(selectedUserId as string);
                 }}
             >
-                <Box display="flex" flexDirection={"row"} justifyContent="space-around" alignItems="center" width="400px">
-                <WarningAmberRoundedIcon color="primary" fontSize="large" style={{margin: "10px"}}/>
-                Do you really want to remove this user? Once removed it can not be restored.
+                <Box
+                    display="flex"
+                    flexDirection={"row"}
+                    justifyContent="space-around"
+                    alignItems="center"
+                    width="400px"
+                >
+                    <WarningAmberRoundedIcon
+                        color="primary"
+                        fontSize="large"
+                        style={{ margin: "10px" }}
+                    />
+                    Do you really want to remove this user? Once removed it can
+                    not be restored.
                 </Box>
             </QuickDialog>
 

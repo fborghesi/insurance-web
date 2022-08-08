@@ -2,10 +2,10 @@ import { CircularProgress, Button } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { UserType } from "../src/api/UserType";
 import { useAuthContext } from "../src/auth/AuthContext";
 import LoginIcon from '@mui/icons-material/Login';
 import { Box } from "@mui/system";
+import { LoggedUserType } from "../src/api/UserType";
 
 
 const Authorize = () => {
@@ -25,7 +25,7 @@ const Authorize = () => {
                 token: token as string,
             }
             
-            authContext!.setUser(user as UserType);
+            authContext!.setUser(user as LoggedUserType);
             router.replace("/");
         }
     }, [authContext, router]);
@@ -33,7 +33,6 @@ const Authorize = () => {
     if (!router.isReady) {
         return <CircularProgress />;
     }
-    console.log(router.query);
 
     if (!router.query.noaccess && router.query.id) {
         return <><CircularProgress />You will be redirected soon</>;

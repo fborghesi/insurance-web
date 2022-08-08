@@ -1,5 +1,5 @@
 
-export type UserType = {
+export interface UserType {
     id: string;
     first_name: string;
     last_name: string;
@@ -7,5 +7,9 @@ export type UserType = {
     changed: number;
     is_admin: boolean;
     is_active: boolean;
+};
+
+export interface LoggedUserType extends UserType {
     token: string;
 };
+
