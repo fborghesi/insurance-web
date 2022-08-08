@@ -44,8 +44,8 @@ const Authorize = () => {
             <h1>Thank you for registering.</h1>
             <p>An account for you has been created on the system, but it is peding approval by the administrator.</p>
             <p>Please try again later or contact the Aministrator to check for status.</p>
-            <Box style={{display: 'block', width: '250px', marginTop: '50px', margin: '0 auto',}}>
-            <Button style={{width: '100%'}} variant="contained" startIcon={<LoginIcon />} onClick={() => router.replace("/login")}>Back to login</Button>
+            <Box style={{display: 'block', width: '250px', margin: '0 auto',}}>
+            <Button style={{width: '100%',  marginTop: '30px'}} variant="contained" startIcon={<LoginIcon />} onClick={() => router.replace("/login")}>Back to login</Button>
             </Box>
             </Box>
         );
