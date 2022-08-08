@@ -35,7 +35,7 @@ const Authorize = () => {
     }
     console.log(router.query);
 
-    if (!router.query.noaccess) {x``
+    if (!router.query.noaccess && router.query.id) {
         return <><CircularProgress />You will be redirected soon</>;
     }
 
