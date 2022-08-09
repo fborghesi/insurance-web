@@ -1,15 +1,13 @@
 import { Box } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { InsuranceApi } from "../api/InsuranceApi";
+import { CarModelPrediction, InsuranceApi } from "../api/InsuranceApi";
 import { ImageInfo } from "./ImageInfo";
 import CarModelViewer from "./CarModelViewer";
 
 const CarModelViewerContainer = () => {
     const [imageMap, setImageMap] = useState<Map<File, ImageInfo>>(new Map());
 
-    const updateApiResponses = useCallback((file: File, category: string) => {
-        console.log(`Classification received for ${file.name}: ${category}`);
-
+    const updateApiResponses = useCallback((file: File, pred: CarModelPrediction) => {
         if (!imageMap.has(file)) {
             console.error(`Map entry for file '${file} not found!'`);
             return;
@@ -19,7 +17,7 @@ const CarModelViewerContainer = () => {
 
         const carImage = newImageMap.get(file);
         carImage!.status = "complete";
-        carImage!.category = category;
+        carImage!.category = pred.score > 0.5 ? `${pred.class} (${Math.trunc(pred.score * 10000) / 100}%)` : "Unknown";
         carImage!.endTime = new Date().getTime();
 
         setImageMap(newImageMap);
@@ -46,8 +44,10 @@ const CarModelViewerContainer = () => {
     useEffect(() => {
         imageMap.forEach((value, key) => {
             if (!value.endTime) {
-                InsuranceApi.carModel(key).then((category) =>
-                    updateApiResponses(key, category)
+                InsuranceApi.carModel(key).then((pred) =>
+                    updateApiResponses(key, pred)
+                ).catch(err => 
+                    console.log(666, err)
                 );
             }
         });

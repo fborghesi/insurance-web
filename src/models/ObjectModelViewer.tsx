@@ -3,6 +3,7 @@ import { Box, CircularProgress } from "@mui/material";
 import ImageUpload from "../components/ImageUpload";
 import ImageClassificationCard from "./ImageClassificationCard";
 import { ImageInfo } from "./ImageInfo";
+import Alert from '@mui/material/Alert';
 
 type OnFilesChangedHandler = (files: File[]) => void;
 
@@ -31,7 +32,10 @@ const ObjectModelViewer = (props: ObjectModelViewerProps) => {
                 multiple={false}
                 onFilesChanged={filesChangedHandler}
             ></ImageUpload>
-            <Box style={{ flexBasis: "100%", height: "30px" }}></Box>
+            <Box style={{ flexBasis: "100%", height: "15px" }} />
+
+            {props.imageInfo?.failedMsg && <Alert severity="error">{props.imageInfo.failedMsg}</Alert>}
+            <Box style={{ flexBasis: "100%", height: "15px" }} />
 
             {imageInfo && (
                 <ImageClassificationCard

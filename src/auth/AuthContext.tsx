@@ -8,6 +8,7 @@ import { LoggedUserType } from "../api/UserType";
 //import jwt_decode from "jwt-decode";
 
 const USER_KEY = "user";
+const SECURE_COOKIES_ENABLED = process.env.NEXT_PUBLIC_ENV !== 'dev';
 
 export type AuthContextType = {
     user: LoggedUserType | null;
@@ -33,7 +34,10 @@ export const AuthContextProvider = (props: { children: ReactNode }) => {
     const setAuthUser = useCallback(
         (newUser: LoggedUserType | null) => {
             if (user?.token != newUser?.token) {
-                setCookie(USER_KEY, JSON.stringify(newUser));
+                setCookie(USER_KEY, JSON.stringify(newUser), {
+                    httpOnly: true,
+                    secure: SECURE_COOKIES_ENABLED,
+                });
                 setUser(newUser);
                 InsuranceApi.setApiToken(newUser?.token, logout);
                 setUserReady(true);

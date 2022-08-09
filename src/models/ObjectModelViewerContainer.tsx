@@ -4,45 +4,54 @@ import { InsuranceApi } from "../api/InsuranceApi";
 import { ImageInfo } from "./ImageInfo";
 import ObjectModelViewer from "./ObjectModelViewer";
 
-
 const ObjectModelViewerContainer = () => {
-    const [imageInfo, setImage] = useState<ImageInfo | undefined>(undefined);
-    const [processedImage, setProcessedImage] = useState<string | undefined>(undefined);
+    const [imageInfo, setImageInfo] = useState<ImageInfo | undefined>(
+        undefined
+    );
+    const [processedImage, setProcessedImage] = useState<string | undefined>(
+        undefined
+    );
 
-    const updateApiResponses = useCallback((category: string) => {
-        if (!imageInfo) {
-            console.error(`Image not set!'`);
-            return;
-        }
+    // const updateApiResponses = useCallback((category: string) => {
+    //     if (!imageInfo) {
+    //         console.error(`Image not set!'`);
+    //         return;
+    //     }
 
-        console.log(`Classification received for ${imageInfo.file.name}: ${category}`);
+    //     console.log(`Classification received for ${imageInfo.file.name}: ${category}`);
 
-        imageInfo.status = "complete";
-        imageInfo.category = category;
-        imageInfo.endTime = new Date().getTime();
+    //     imageInfo.status = "complete";
+    //     imageInfo.category = category;
+    //     imageInfo.endTime = new Date().getTime();
 
-        setImage(imageInfo);
-    }, [imageInfo]);
+    //     setImageInfo(imageInfo);
+    // }, [imageInfo]);
 
     const onFilesChangedHandler = (files: File[]) => {
         setProcessedImage(undefined);
-        setImage({
+        setImageInfo({
             file: files[0],
             startTime: new Date().getTime(),
             category: undefined,
             endTime: undefined,
             status: "idle",
-
         });
     };
 
     useEffect(() => {
         if (imageInfo && !imageInfo.endTime) {
-            InsuranceApi.objectModel(imageInfo.file).then(img => {
-                imageInfo.endTime = new Date().getTime();
-                imageInfo.category = undefined;
-                setProcessedImage(img);
-            });
+            const newImageInfo = {...imageInfo};
+            InsuranceApi.objectModel(imageInfo.file)
+                .then((img) => {
+                    setProcessedImage(img);
+                })
+                .catch((err) => {
+                    newImageInfo.failedMsg = `Error processing image: ${err.response?.data?.error ?? err.message}`;                    
+                }).finally( () => {
+                    newImageInfo.category = undefined;
+                    newImageInfo.endTime = new Date().getTime();
+                    setImageInfo(newImageInfo);
+                });
         }
     }, [imageInfo]);
 

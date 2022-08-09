@@ -4,5 +4,6 @@ export type ImageInfo = {
     startTime: number;
     category: string | undefined;
     endTime: number | undefined;
-    status: "idle" | "in progress" | "complete";
+    status: "idle" | "in progress" | "complete" | "error";
+    failedMsg?: string | undefined;
 };

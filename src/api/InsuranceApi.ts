@@ -13,6 +13,11 @@ export type ServerLoginResponseType = {
     data: UserType;
 };
 
+export type CarModelPrediction = {
+    class: string;
+    score: number;
+};
+
 const axiosInstance = axios.create({
     baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
     headers: {
@@ -28,7 +33,7 @@ const extract_error_msg = (
 
     if (e) {
         if (e instanceof AxiosError) {
-            msg = e.response?.data ?? e.message;
+            msg = e.response?.data?.error ?? e.message;
         } else if (e instanceof Error) {
             msg = (e as Error).message;
         } else {
@@ -54,10 +59,12 @@ export const InsuranceApi = {
         reqInterceptorId = axiosInstance.interceptors.request.use(
             (config: AxiosRequestConfig) => {
                 if (config && config.headers) {
-                    // config.headers["x-access-token"] = token as string;
-                    config.headers["Authorization"] = token as string;
+                    config.headers["authorization"] = token as string;
                     return config;
                 }
+            },
+            (err: any) => {
+                return Promise.reject(err);
             }
         );
 
@@ -71,8 +78,8 @@ export const InsuranceApi = {
                     if (err.response && err.response.status === 401) {
                         expiredTokenHandler();
                     }
-                    throw err.response?.data ?? err.message;
                 }
+                return Promise.reject(err);
             }
         );
     },
@@ -96,32 +103,41 @@ export const InsuranceApi = {
         }
     },
 
-    carModel: async (file: File): Promise<string> => {
-        const response = await axiosInstance.post("/car-model", file, {
-            headers: {
-                "Content-Type": file.type,
-            },
-        });
-        if (response.data.message === "Success") {
-            return Promise.resolve(response.data.data);
-        } else {
-            console.log("ERROR on CarModel response", response);
-            return Promise.reject(response.data.message);
+    carModel: async (file: File): Promise<CarModelPrediction> => {
+        try {
+            const response = await axiosInstance.post("/car-model", file, {
+                headers: {
+                    "Content-Type": file.type,
+                },
+            });
+
+            if (response.data.message === "Success") {
+                return Promise.resolve(response.data.data);
+            } else {
+                return Promise.reject(response.data.message);
+            }
+        } catch (err) {
+            return Promise.reject(err);
         }
     },
 
     objectModel: async (file: File): Promise<string> => {
-        const response = await axiosInstance.post("/object-model", file, {
-            headers: {
-                "Content-Type": file.type,
-            },
-        });
+        try {
+            const response = await axiosInstance.post("/object-model", file, {
+                headers: {
+                    "Content-Type": file.type,
+                },
+            });
 
-        if (response.status === 200) {
-            return Promise.resolve("data:image/png;base64, " + response.data);
-        } else {
-            console.log("ERROR on objectModel response", response);
-            return Promise.reject(response.data.message);
+            if (response.status === 200) {
+                return Promise.resolve(
+                    "data:image/png;base64, " + response.data
+                );
+            } else {
+                return Promise.reject(response);
+            }
+        } catch (err) {
+            return Promise.reject(err);
         }
     },
 
@@ -151,17 +167,12 @@ export const InsuranceApi = {
         }
     },
 
-
     getUser: async (id: string): Promise<UserType> => {
-        try {
-            const response = await axiosInstance.get(`/user/${id}`);
-            if (response.data.message === "Success") {
-                return Promise.resolve(response.data.data);
-            } else {
-                return Promise.reject(JSON.parse(response.data.error));
-            }
-        } catch (e) {
-            return Promise.reject(extract_error_msg(e));
+        const response = await axiosInstance.get(`/user/${id}`);
+        if (response.data.message === "Success") {
+            return Promise.resolve(response.data.data);
+        } else {
+            return Promise.reject(JSON.parse(response.data.error));
         }
     },
 
@@ -183,6 +194,4 @@ export const InsuranceApi = {
             return Promise.reject(extract_error_msg(e));
         }
     },
-
-
 };

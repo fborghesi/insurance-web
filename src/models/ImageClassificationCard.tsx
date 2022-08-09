@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { CircularProgress, Paper, Typography } from "@mui/material";
-import { Box, display } from "@mui/system";
+import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { loadImage } from "../utils/loadImage";
 import { useAsync } from "../utils/useAsync";
@@ -43,7 +43,6 @@ const ImageClassificationCard = (props: ImageClassificationCardProps) => {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 alignItems: "center",
-                
             }}
         >
             {props.file && (
