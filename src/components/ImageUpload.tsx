@@ -45,7 +45,7 @@ const ImageUpload = (props: ImageUploadProps) => {
 
    
     return (
-        <div {...getRootProps()} className="drop-area" style={{width: "100%", margin: "auto"}}>
+        <div {...getRootProps()} className="img-upload-drop-area" style={{width: "100%", margin: "auto"}}>
             <input {...getInputProps()} />
             <Box display={"flex"} flexDirection="row" flexWrap={"wrap"} justifyContent={"center"} alignItems={"center"}>
                 <Box>
