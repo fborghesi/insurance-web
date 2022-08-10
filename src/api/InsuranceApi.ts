@@ -20,6 +20,7 @@ export type CarModelPrediction = {
 
 const axiosInstance = axios.create({
     baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
+    timeout: 120 * 1000,
     headers: {
         "Content-Type": "application/json",
     },
