@@ -82,7 +82,11 @@ const ImageClassificationCard = (props: ImageClassificationCardProps) => {
                         </Box>
                     </Typography>
                 )}
-                {props.processing && <CircularProgress />}
+                {props.processing && (
+                    <Box width="100%" display="flex" justifyContent={"center"}>
+                        <CircularProgress />
+                    </Box>
+                )}
             </Box>
         </Paper>
     );

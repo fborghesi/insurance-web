@@ -34,7 +34,7 @@ const CarModelViewer = (props: ObjectModelViewerProps) => {
             <Box style={{ flexBasis: "100%", height: "30px" }}></Box>
 
             <Carousel
-                sx={{ width: "400px" }}
+                sx={{ width: "400px", minHeight: '300px' }}
                 cycleNavigation={true}
                 navButtonsAlwaysVisible={false}
                 swipe={true}
