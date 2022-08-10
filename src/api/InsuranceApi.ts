@@ -20,7 +20,7 @@ export type CarModelPrediction = {
 
 const axiosInstance = axios.create({
     baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
-    timeout: 120 * 1000,
+    timeout: 100 * 1000,
     headers: {
         "Content-Type": "application/json",
     },
@@ -123,23 +123,32 @@ export const InsuranceApi = {
     },
 
     objectModel: async (file: File): Promise<string> => {
-        try {
-            const response = await axiosInstance.post("/object-model", file, {
-                headers: {
-                    "Content-Type": file.type,
-                },
-            });
+        const maxRetries = 4;
 
-            if (response.status === 200) {
-                return Promise.resolve(
-                    "data:image/png;base64, " + response.data
-                );
-            } else {
-                return Promise.reject(response);
+        for(let i =0 ; i < maxRetries; i++) {
+            try {
+                console.log(`Invoking /object-model, attempt #${i + 1}`);
+                const response = await axiosInstance.post("/object-model", file, {
+                    headers: {
+                        "Content-Type": file.type,
+                    },
+                });
+
+                if (response.status === 200) {
+                    return Promise.resolve(
+                        "data:image/png;base64, " + response.data
+                    );
+                } else {
+                    return Promise.reject(response);
+                }
+            } catch (err: any) {
+                if (err.status === 504 && i >= maxRetries) {
+                    return Promise.reject(err);
+                }
             }
-        } catch (err) {
-            return Promise.reject(err);
         }
+
+        return "";
     },
 
     getUsers: async (): Promise<UserType[]> => {
