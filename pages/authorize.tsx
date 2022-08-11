@@ -1,11 +1,11 @@
 import { CircularProgress, Button } from "@mui/material";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuthContext } from "../src/auth/AuthContext";
 import LoginIcon from '@mui/icons-material/Login';
 import { Box } from "@mui/system";
 import { LoggedUserType } from "../src/api/UserType";
+import { Base64 } from "js-base64";
 
 
 const Authorize = () => {
@@ -13,20 +13,26 @@ const Authorize = () => {
     const authContext = useAuthContext();
 
     useEffect(() => {
-        if (router.isReady && router.query.id) {
-            const {id, first_name, last_name, email, is_admin, is_active, token} = router.query;
-            const user = {
-                id: id as string,
-                first_name: first_name as string,
-                last_name: last_name as string,
-                email: email as string,
-                is_admin: (is_admin as string).toLowerCase() === "true",
-                is_active: (is_active as string).toLowerCase() === "true",
-                token: token as string,
+        if (router.isReady && router.query.data) {
+            try {
+                const data = Base64.decode(router.query.data as string);
+                const {id, first_name, last_name, email, is_admin, is_active, token} = JSON.parse(data);
+                console.log('is_admin', ('' + is_admin as string).toLowerCase());
+                const user = {
+                    id: id as string,
+                    first_name: first_name as string,
+                    last_name: last_name as string,
+                    email: email as string,
+                    is_admin: ('' + is_admin as string).toLowerCase() === "true",
+                    is_active: ('' + is_active as string).toLowerCase() === "true",
+                    token: token as string,
+                }
+                
+                authContext!.setUser(user as LoggedUserType);
+                router.replace("/");
+            } catch(err) {
+                console.log(err);
             }
-            
-            authContext!.setUser(user as LoggedUserType);
-            router.replace("/");
         }
     }, [authContext, router]);
 
